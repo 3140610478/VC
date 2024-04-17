@@ -1,0 +1,10 @@
+*.zip
+*.wav
+*.pkf
+
+*.data
+
+*.model
+*.log
+
+__pycache__/
