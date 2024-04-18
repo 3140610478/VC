@@ -141,9 +141,9 @@ def train_epoch(epoch):
         loss.backward()
         OPTIM["G"].step()
 
-    message = [f"LOSS_{key}: {loss_rec[key]:.4f}" for key in loss_rec.keys()]
+    message = [f"LOSS_{key}: {loss_rec[key]:>10.4f}" for key in loss_rec.keys()]
     message = "\t".join(message)
-    logger.info(f"\n[epoch{epoch:0>3}]\n{message}")
+    logger.info(f"\n[epoch{epoch:0>4}]\n{message}")
 
     if epoch % 50 == 0:
         torch.save(
