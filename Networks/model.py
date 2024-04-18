@@ -118,7 +118,7 @@ class Generator(nn.Sequential):
 class Discriminator(nn.Sequential):
     def __init__(self):
         input = [
-            nn.Conv2d(1, 3, 1),
+            nn.Conv2d(1, 256, 3, 1),
             nn.GLU(dim=1),
         ]
         downsample = [
