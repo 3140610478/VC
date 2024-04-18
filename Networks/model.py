@@ -85,7 +85,7 @@ class Reshape1dto2d(nn.Sequential):
 
 
 class Generator(nn.Sequential):
-    def __init__(self):
+    def __init__(self, n_mels = config.N_MELS):
         input = [
             nn.Conv2d(2, 256, (5, 15), 1, (2, 7)),
             nn.GLU(dim=1),
@@ -95,13 +95,13 @@ class Generator(nn.Sequential):
             DownSample(256, 512, 3, 2, 1),
         ]
         reshape2dto1d = [
-            Reshape2dto1d(512, config.N_MELS//4, 256),
+            Reshape2dto1d(512, n_mels//4, 256),
         ]
         resblock = [
             ResBlock() for _ in range(6)
         ]
         reshape1dto2d = [
-            Reshape1dto2d(256, 256, config.N_MELS//4),
+            Reshape1dto2d(256, 256, n_mels//4),
         ]
         upsample = [
             UpSample(256, 256, 5, 1, 2, 2),
@@ -118,7 +118,7 @@ class Generator(nn.Sequential):
 class Discriminator(nn.Sequential):
     def __init__(self):
         input = [
-            nn.Conv2d(1, 256, 3, 1),
+            nn.Conv2d(1, 3, 1),
             nn.GLU(dim=1),
         ]
         downsample = [

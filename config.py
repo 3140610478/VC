@@ -23,5 +23,5 @@ batch_size = 1
 import torch
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-Gpath = "./Save/G600.model"
-Dpath = "./Save/D600.model"
+Gpath = "./Save/G2500.model"
+Dpath = "./Save/D2500.model"

@@ -25,9 +25,11 @@ evalY = torch.load(os.path.abspath(os.path.join(
 eval_dataset = VCDataset(evalX, evalY).to(config.device)
 
 if __name__ == "__main__":
+    output_folder = os.path.join(base_folder, config.output_eval_data)
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder, exist_ok=True)
+        
     with torch.no_grad():
-        # spec, _ = torchaudio.load(os.path.join(config.original_eval_data, "Ikura/Ikura.wav"))
-        # spec = Vocoder().forward(spec).squeeze(0)
         spec = torch.cat(tuple(eval_dataset.specX), dim=1)
         spec = spec.reshape(1, 1, *spec.shape)
         spec = torch.cat((spec, torch.ones_like(spec)), dim=1)
@@ -36,9 +38,18 @@ if __name__ == "__main__":
         spec = spec.to(config.device)
         spec = Vocoder().to(config.device).inverse(spec)
         spec = spec.squeeze(1).cpu()
-    output_folder = os.path.join(base_folder, config.output_eval_data)
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder, exist_ok=True)
-    output_file = os.path.join(output_folder, "./output.wav")
+    output_file = os.path.join(output_folder, "./outputXY.wav")
+    torchaudio.save(output_file, spec, config.SAMPLE_RATE)
+    
+    with torch.no_grad():
+        spec = torch.cat(tuple(eval_dataset.specY), dim=1)
+        spec = spec.reshape(1, 1, *spec.shape)
+        spec = torch.cat((spec, torch.ones_like(spec)), dim=1)
+        spec = G["YX"](spec)
+        spec = spec * eval_dataset.stdX + eval_dataset.meanX
+        spec = spec.to(config.device)
+        spec = Vocoder().to(config.device).inverse(spec)
+        spec = spec.squeeze(1).cpu()
+    output_file = os.path.join(output_folder, "./outputYX.wav")
     torchaudio.save(output_file, spec, config.SAMPLE_RATE)
     pass

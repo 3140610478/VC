@@ -21,15 +21,15 @@ class VCDataset(Dataset):
 
     def __getitem__(self, index):
         specX, specY = self.specX[index], self.specY[index]
-        lenX, lenY = specX.shape[0], specY.shape[0]
+        lenX, lenY = specX.shape[1], specY.shape[1]
         maskX, maskY = torch.ones_like(specX), torch.ones_like(specY)
 
-        maskLenX = torch.randint(0, int(lenX * (1-self.max_mask_rate)), (1,))
+        maskLenX = torch.randint(0, int(lenX * self.max_mask_rate), (1,))
         maskStartX = torch.randint(0, int(lenX - maskLenX), (1,))
-        maskX[maskStartX:(maskStartX+maskLenX), :] = 0
-        maskLenY = torch.randint(0, int(lenY * (1-self.max_mask_rate)), (1,))
+        maskX[:, maskStartX:(maskStartX+maskLenX)] = 0
+        maskLenY = torch.randint(0, int(lenY * self.max_mask_rate), (1,))
         maskStartY = torch.randint(0, int(lenY - maskLenY), (1,))
-        maskY[maskStartY:(maskStartY+maskLenY), :] = 0
+        maskY[:, maskStartY:(maskStartY+maskLenY)] = 0
 
         return specX.unsqueeze(0), maskX.unsqueeze(0), specY.unsqueeze(0), maskY.unsqueeze(0)
 

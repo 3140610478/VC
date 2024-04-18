@@ -159,11 +159,11 @@ if __name__ == '__main__':
     if not os.path.exists(config.save):
         os.mkdir(config.save)
 
-    for e in trange(1, 50,  desc="Epochs"):
+    for e in trange(1, 51,  desc="Epochs"):
         train_epoch(e)
 
     WEIGHT["ID"] = 0
-    for e in trange(50, 600, desc="Epochs"):
+    for e in trange(51, 2501, desc="Epochs"):
         train_epoch(e)
     
     pass
