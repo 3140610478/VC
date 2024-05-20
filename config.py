@@ -14,8 +14,6 @@ save = "./Save"
 
 speaker_ids = ["Trump", "Ikura",]
 
-LogMode = "w"
-
 temporal_stride = 128
 
 batch_size = 1
@@ -23,5 +21,6 @@ batch_size = 1
 import torch
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-Gpath = "./Save/G2500.model"
-Dpath = "./Save/D2500.model"
+Load = False
+Gpath = "./Save/G50.model"
+Dpath = "./Save/D50.model"

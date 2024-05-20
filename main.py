@@ -14,16 +14,22 @@ if True:
     from Data import VCDataset, VCDataLoader
     from Log import getLogger
 
-G = nn.ModuleDict({
-    "XY":   Generator(),
-    "YX":   Generator(),
-}).to(config.device)
-D = nn.ModuleDict({
-    "X1": Discriminator(),
-    "Y1": Discriminator(),
-    "X2": Discriminator(),
-    "Y2": Discriminator(),
-}).to(config.device)
+
+if config.Load:
+    G = torch.load(config.Gpath, config.device)
+    D = torch.load(config.Dpath, config.device)
+else:
+    G = nn.ModuleDict({
+        "XY":   Generator(),
+        "YX":   Generator(),
+    }).to(config.device)
+    D = nn.ModuleDict({
+        "X1": Discriminator(),
+        "Y1": Discriminator(),
+        "X2": Discriminator(),
+        "Y2": Discriminator(),
+    }).to(config.device)
+    
 LOSS = nn.ModuleDict({
     "ADV":  nn.BCELoss(),
     "CYC":  nn.L1Loss(),
@@ -37,8 +43,8 @@ WEIGHT = {
     "ADV2": 1,
 }
 OPTIM = {
-    "G": torch.optim.Adam(G.parameters(), 2e-4, betas=(0.5, 0.999)),
-    "D": torch.optim.Adam(D.parameters(), 1e-4, betas=(0.5, 0.999)),
+    "G": torch.optim.Adam(G.parameters(), 2e-4, betas=(0.5, 0.999), weight_decay=2e-4),
+    "D": torch.optim.Adam(D.parameters(), 1e-4, betas=(0.5, 0.999), weight_decay=2e-4),
 }
 
 trainX = torch.load(os.path.abspath(os.path.join(
@@ -54,7 +60,7 @@ train_dataloader = VCDataLoader(
     shuffle=True,
     drop_last=True,
 )
-logger = getLogger("MaskCycleGAN-VC", config.LogMode)
+logger = getLogger("MaskCycleGAN-VC", "a" if config.Load else "w")
 
 
 def train_epoch(epoch):
@@ -159,11 +165,11 @@ if __name__ == '__main__':
     if not os.path.exists(config.save):
         os.mkdir(config.save)
 
-    for e in trange(1, 51,  desc="Epochs"):
-        train_epoch(e)
+    # for e in trange(1, 51,  desc="Epochs"):
+    #     train_epoch(e)
 
     WEIGHT["ID"] = 0
-    for e in trange(51, 2501, desc="Epochs"):
+    for e in trange(4301, 4501, desc="Epochs"):
         train_epoch(e)
     
     pass
